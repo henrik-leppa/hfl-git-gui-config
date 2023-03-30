@@ -1,0 +1,15 @@
+# Handle line endings automatically for files detected as text and leave all
+# files detected as binary untouched. This will handle all files *not* defined
+# below.
+*                 text=auto
+
+# Documentation
+*.md              text
+
+# Configs
+.gitattributes    text
+.gitignore        text
+
+# Exclude files from exporting
+.gitattributes    export-ignore
+.gitignore        export-ignore
