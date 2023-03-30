@@ -1,0 +1,233 @@
+# Synched Git Configurations
+# ==========================
+#
+# You can link to this file in `~/.gitconfig` by running the following in the
+# terminal:
+# ```sh
+# git config --file ~/.gitconfig include.path '~/INSERT/PATH/TO/REPO/HERE/gitconfig.txt'
+# ```
+
+[core]
+  # By default, git uses a pager (like `less`) to show diffs in shell. This
+  # setting disables it.
+  pager = cat
+
+[color]
+  # Older versions of git do not color shell outputs by default. This setting
+  # ensures they do.
+  ui = auto
+
+[init]
+  # Older versions on git use `master` as default branch. This setting sets it to: `main`.
+  defaultBranch = main
+
+[gui]
+  # By default, commit message area's width is limited, even when the window has
+  # space. This setting removes that restriction.
+  commitmsgwidth = 1000
+
+  # By default, number of remembered repositories is limited, which is annoying.
+  # This setting removes that restriction.
+  maxrecentrepo = 100
+
+  # I find spellcheck annoying and unhelpful. If I need to check spelling, I can
+  # use a dictionary.
+  spellingdictionary = none
+
+  # Warns before committing to a detached head. Probably useful.
+  warndetachedcommit = true
+
+  # Use smallest font size allowed for maximum visible code. Fonts other than
+  # "DejaVu" can also be used.
+  fontui = -family \"DejaVu Sans\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+  fontdiff = -family \"DejaVu Sans Mono\" -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+
+[guitool "Checkout (assume remote: `origin`)"]
+  # Check out a branch.
+  #
+  # If the branch is remote, check out its local version or create one.
+  #
+  # Note: Assumes that the remote is `origin`.
+  cmd = git checkout $(echo \"$REVISION\" | sed 's/^origin\\///g')
+  revprompt = yes
+
+[guitool "Clean -- All"]
+  # Remove all untracked files from the working tree
+  cmd = git clean --force
+
+[guitool "Clean -- One File"]
+  # Remove the untracked file that is selected in the "Unstaged Changes" list.
+  cmd = git clean --force -- $FILENAME
+  needsfile = yes
+  noconsole = yes
+
+[guitool "Commit -- Undo"]
+  # Undoes the last commit and appends its message to the text area.
+  cmd = git log -1 --pretty=%B >> ./.git/GITGUI_MSG && git reset --soft HEAD~
+
+[guitool "Fetch All Branches And All Submodules"]
+  # Fetches all branches and all submodules.
+  #
+  # Requires an external script to be found in `PATH`: [`git-fetch-all-recur` -
+  # How to git fetch everything - Code Yarns][git-fetch-all-recur].
+  #
+  # [git-fetch-all-recur]: https://codeyarns.com/tech/2016-05-17-how-to-git-fetch-everything.html#gsc.tab=0
+  cmd = git fetch-all-recur
+
+[guitool "Fetch And Fast-Forward All Branches"]
+  # Fetches and fast-forwards all branches.
+  #
+  # Requires an external script to be found in `PATH`: [`git-ffwd-update` -
+  # muhqu's Answer - Can "git pull --all" update all my local branches? - Stack
+  # Overflow][git-ffwd-update].
+  #
+  # [git-ffwd-update]: https://stackoverflow.com/a/9076361
+  cmd = git ffwd-update
+
+[guitool "Filesystem Check -- Unreachable Objects"]
+  # Use `git fsck` (Filesystem Check) to show all unreachable objects.
+  cmd = git fsck --unreachable
+
+[guitool "Help with tools"]
+  # Prints out the configuration file for these tools.
+  cmd = cat ~/INSERT/PATH/TO/REPO/HERE/gitconfig.txt
+
+[guitool "Log -- Unpushed"]
+  # Shows log of all commits not pushed to a remote.
+  cmd = git log --branches --not --remotes
+
+[guitool "Merge (No Fast-Forward)..."]
+  # Merge without using fast-forward, which ensures that a merge commit is made.
+  #
+  # Useful for making sure that a branch is recorded.
+  cmd = git merge --no-ff $REVISION
+  revprompt = yes
+
+[guitool "Merge -- Abort"]
+  # Abort merging.
+  cmd = git merge --abort
+
+[guitool "Merge -- Continue"]
+  # Continue merging.
+  cmd = git merge --continue
+
+[guitool "Open Terminal"]
+  # Opens a terminal in the root of the repository.
+  cmd = gnome-terminal
+  noconsole = yes
+
+[guitool "Rebase (automatic)"]
+  # Do an automatic rebase.
+  #
+  # Useful when a push fails because someone has pushed ahead of you when
+  # working on the same branch.
+  cmd = git rebase
+
+[guitool "Rebase (get command for interactive)..."]
+  # Interactive rebasing cannot be done in Git GUI (even when specifying a GUI
+  # text editor), so instead this writes a command for doing it in the shell.
+  cmd = echo \"git rebase -i $REVISION\"
+  revprompt = yes
+
+[guitool "Rebase -- Abort"]
+  # Abort rebasing.
+  cmd = git rebase --abort
+
+[guitool "Rebase -- Continue"]
+  # Continue rebasing.
+  cmd = git rebase --continue
+
+[guitool "Reference Log"]
+  # Print reference log (`git reflog`).
+  cmd = git reflog
+
+[guitool "Reference Log (Reversed)"]
+  # Print reference log (`git reflog`) in reverse order.
+  #
+  # Generally more useful than the regular, because now the most recent
+  # information is in the bottom, to which the terminal tends to scroll.
+  cmd = "git reflog | sed '1!G;h;$!d'"
+
+[guitool "Run Command In \"Commit Message\" Field"]
+  # Runs the command in "Commit Message" field in Bash.
+  #
+  # Does not work for interactive commands.
+  cmd = bash ./.git/GITGUI_BCK
+
+[guitool "Stash -- Apply By Index..."]
+  # Apply a stash by index (`stash@{index}`).
+  #
+  # If no index is given, then it defaults to 0.
+  cmd = git stash apply \"stash@{${ARGS:-0}}\"
+  argprompt = yes
+
+[guitool "Stash -- Apply By Name..."]
+  # Apply a stash by name/message.
+  #
+  # Requires an external script to be found in `PATH`: [`git-named-stash` -
+  # henrik-leppa - GitHub][git-named-stash].
+  #
+  # [git-named-stash]: https://github.com/henrik-leppa/git-named-stash
+  cmd = git named-stash apply \"$ARGS\"
+  argprompt = yes
+
+[guitool "Stash -- Drop By Index..."]
+  # Drop a stash by index (`stash@{index}`).
+  #
+  # If no index is given, then it defaults to 0.
+  cmd = git stash drop \"stash@{${ARGS:-0}}\"
+  argprompt = yes
+
+[guitool "Stash -- Drop By Name..."]
+  # Drop a stash by name/message.
+  #
+  # Requires an external script. See above in "Stash -- Apply By Name...".
+  cmd = git named-stash drop \"$ARGS\"
+  argprompt = yes
+
+[guitool "Stash -- List"]
+  # List all stash entries.
+  cmd = git stash list
+
+[guitool "Stash -- Pop By Index..."]
+  # Pop a stash by index (`stash@{index}`).
+  #
+  # If no index is given, then it defaults to 0.
+  cmd = git stash pop \"stash@{${ARGS:-0}}\"
+  argprompt = yes
+
+[guitool "Stash -- Pop By Name..."]
+  # Pop a stash by name/message.
+  #
+  # Requires an external script. See above in "Stash -- Apply By Name...".
+  cmd = git named-stash pop \"$ARGS\"
+  argprompt = yes
+
+[guitool "Stash -- Push Unstaged..."]
+  # Push all unstaged (including untracked) changes to a stash, with an optional
+  # message.
+  cmd = git stash push --keep-index --include-untracked --message \"$ARGS\"
+  argprompt = yes
+
+[guitool "Stash -- Push..."]
+  # Push all tracked changes to a stash, with an optional message.
+  cmd = git stash push --message \"$ARGS\"
+  argprompt = yes
+
+[guitool "Tag -- Delete"]
+  # Delete a tag by name. Remember to include tag changes when pushing
+  # afterwards.
+  cmd = git tag --delete \"$ARGS\"
+  argprompt = yes
+
+[guitool "Tag -- List With Message"]
+  # List all tags, including the first 10 lines of their messages.
+  cmd = git tag -n10
+
+[guitool "Write Commit Template"]
+  # Write a template to commit text area, which helps with making sure the
+  # messages is correctly formatted.
+  #
+  # Remember to remove it before commiting.
+  cmd = printf \"%s\n\" \"If applied, this commit will...                50|\n\n|====================================================================72|\" > ./.git/GITGUI_MSG
+  noconsole = yes
